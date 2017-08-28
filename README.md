@@ -85,8 +85,8 @@ git revert SHA                            撤销SHA的提交
 git branch  newbranch     新建分支  
 git checkout newbranch           切换分支（新建并切换分支：git checkout –b newbranch）  
 git branch –d newbranch       删除分支（D表示强制删除）  
-git branch –v                              查看各个分支的最近一次提交  
-git checkout –theirs                   file    cherry-pick中冲突时使用拷贝源的文件  
+git branch –v                              查看各个分支的最近一次提交  
+git branch -r             查看远程分支
 ```
 
 ### 复制节点
@@ -134,8 +134,12 @@ git clone ssh://shiyang@192.168.0.25/home/29/shiyang/work/qiku            克隆
 
 ### merge与rebase差别
 ```
-merge会将两个分支最近的节点合并生成一个新的节点，原先两个分支的节点都保留，非线性结构；rebase会在两分支的结合节点依次合入分支的节点，然后依次更新master上后面分支节点，保证线性；如果想要一个干净的没有merge节点的线性历史树，应该rebase，如果想保存两个分支完整的历史记录，避免重写commit history的风险，则merge
+merge会将两个分支最近的节点合并生成一个新的节点，原先两个分支的节点都保留，非线性结构  
+rebase会在两分支的结合节点依次合入分支的节点，然后依次更新master上后面分支节点，保证线性  
+如果想要一个干净的没有merge节点的线性历史树，应该rebase，如果想保存两个分支完整的历史记录，避免重写commit history的风险，则merge
 ```
 
 ### revert与reset差别
+```
 reest是把HEAD向后移动了一下，而revert则是HEAD继续向前
+```
