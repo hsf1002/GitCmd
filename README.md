@@ -4,13 +4,15 @@ git common commands
 ### 信息配置
 ```
 git config --list  
-git config –global user.name “sky”  
-git config –global user.email   feng_he@xunrui.com.cn  
-git config –global core.editor vi  
-git config –global merge.too vimdiff  
+git config --global user.name “sky”  
+git config --global user.email   hsf1002@gmail.com  
+git config --global core.editor vi  
+git config --global merge.too vimdiff  
+git config --global alias.st "status"
+git config --global alias.ck "checkout"
 ```
 
-### 删除多余
+### 删除冗余
 ```
 find . -name .gitignore | xargs rm -rf  
 find . -name .git | xargs rm -rf
@@ -21,6 +23,7 @@ find . -name .git | xargs rm -rf
 untracked、unmodifed、modified、staged、committed
 ```
 
+### 初始化并提交
 ```
 git init  
 git add .     untracked->unmodifed  
@@ -28,7 +31,7 @@ git commit   -m:  提交更新 –a:  跳过暂存区
 git commit –amend     重新提交  
 ```
 
-### .gitignore  
+### 配置.gitignore  
 ```
 *.[ao]          任何.a或者.o文件  
 !lib.a          除了lib.a之外  
@@ -60,7 +63,7 @@ git log –p – filepath/file              查看file在历史哪些提交有�
 git reflog  查看引用分支，所有的git操作都将记录，可配合reset回退  
 ```
 
-### 撤销恢复
+### 撤销与恢复
 ```
 git checkout -- file                       回退文件中工作区的修改  
 git reset HEAD file                      回到已修改未暂存的状态  
@@ -125,5 +128,14 @@ git remote add        git-base-cmcc  git@192.168.0.68:sprd9830_3.2.0_cmcc  lo
 git fetch           git-base-cmcc           将远程分支代码pull下来到git-base-cmcc  
 git push  base_cmcc       master:base_cmcc  将本地master分支push到远程base_cmcc分支  
 git push  base_cmcc       :base_cmcc      先删除远程base_cmcc的base_cmcc分支  
+git push -u origin master -f  	往github push时候出错，如果要直接覆盖github上代码
 git clone ssh://shiyang@192.168.0.25/home/29/shiyang/work/qiku            克隆某个工程到本地  
 ```
+
+### merge与rebase差别
+```
+merge会将两个分支最近的节点合并生成一个新的节点，原先两个分支的节点都保留，非线性结构；rebase会在两分支的结合节点依次合入分支的节点，然后依次更新master上后面分支节点，保证线性；如果想要一个干净的没有merge节点的线性历史树，应该rebase，如果想保存两个分支完整的历史记录，避免重写commit history的风险，则merge
+```
+
+### revert与reset差别
+reest是把HEAD向后移动了一下，而revert则是HEAD继续向前
