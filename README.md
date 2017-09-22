@@ -10,6 +10,7 @@ git config --global core.editor vi
 git config --global merge.too vimdiff  
 git config --global alias.st "status"
 git config --global alias.ck "checkout"
+git config --global credential.helper store   (防止github提交时重复输入用户名密码)
 ```
 
 ### 删除冗余
