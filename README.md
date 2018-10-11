@@ -4,7 +4,7 @@ git common commands
 ### 信息配置
 ```
 git config --list  
-git config --global user.name “sky”  
+git config --global user.name sky
 git config --global user.email   hsf1002@gmail.com  
 git config --global core.editor vi  
 git config --global merge.too vimdiff  
@@ -43,9 +43,9 @@ out/            out目录，非out文件
 
 ### 查看差分
 ```
-git diff               working file – index file  
+git diff                  working file – index file  
 git diff HEAD             working file – commit file  
-git diff –cached         index file – commit file
+git diff –cached          index file – commit file
 ```
 
 ### 删除git多余
@@ -72,9 +72,9 @@ git reset HEAD file                      回到已修改未暂存的�
 git reset HEAD~1                       撤销最近一次提交  
 git reset HEAD^                          撤销最近一次提交  
 git reset SHA                               回到SHA的状态  
-git reset –soft                              回退commit  
-git reset –mixed                          回退commit、index  
-git reset –hard                             回退commit、index、working  
+git reset –soft                              回退commit->index  
+git reset –mixed                          回退index->working  
+git reset –hard                             回退commit、index、working->unchanged  
        
 git revert HEAD                         撤销上一次提交  
 git revert HEAD^                       撤销上上一次提交  
@@ -118,7 +118,7 @@ git diff SHA1   SHA1基于上次提交生成的patch
 git diff SHA1 SHA2 SHA2基于SHA1生成的patch  
 git apply –check patch  打patch前判断能否顺利执行  
 git apply patch    打patch  
-git patch –p1 < patch              先进入patch指示的目录，将patch拷贝到该目录，执行此命令
+git patch –p1 < patch     先进入patch指示的目录，将patch拷贝到该目录，执行此命令(不支持二进制和so等文件)
 ```
 
 ### 远程分支
