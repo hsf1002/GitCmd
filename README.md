@@ -11,6 +11,12 @@ git config --global merge.too vimdiff
 git config --global alias.st "status"
 git config --global alias.ck "checkout"
 git config --global credential.helper store   (防止github提交时重复输入用户名密码)
+
+git config --local： 对本次仓库有效
+git config --global：对当前用户（所有仓库）有效
+git config --system：对所有用户有效
+
+对于.git/config配置而言，git config --local优先级最高
 ```
 
 ### 删除冗余
@@ -27,58 +33,60 @@ untracked、unmodifed、modified、staged、committed
 ### 初始化并提交
 ```
 git init  
-git add .     untracked->unmodifed  
-git commit   -m:  提交更新 –a:  跳过暂存区  
+git add .             未跟踪->已跟踪为修改  
+git commit   -m:      提交更新 –a:  跳过暂存区  
 git commit –amend     重新提交  
 ```
 
 ### 配置.gitignore  
 ```
-*.[ao]          任何.a或者.o文件  
-!lib.a          除了lib.a之外  
-out             out目录和out文件  
-out/            out目录，非out文件  
-/out  out目录和out文件，子目录下的out不包括                       
+*.[ao]        任何.a或者.o文件  
+!lib.a        除了lib.a之外  
+out           out目录和out文件  
+out/          out目录，非out文件  
+/out          out目录和out文件，子目录下的out不包括                       
 ```
 
 ### 查看差分
 ```
-git diff                  working file – index file  
-git diff HEAD             working file – commit file  
-git diff –cached          index file – commit file
+git diff           工作区 – 暂存区  
+git diff HEAD      工作区 – 提交区
+git diff –cached   暂存区 – 提交区
 ```
 
 ### 删除git多余
 ```
-git rm $(git ls-files –deleted)             删除多个已删除的文件  
-git rm  从工作目录（working tree）删除  
-git rm –f  从工作目录和暂存区删除  
-git rm –cached   从暂存区删除  
+git rm $(git ls-files –deleted)  删除多个已删除的文件  
+git rm  从工作目录（working tree） 删除  
+git rm –f         从工作目录和暂存区删除  
+git rm –cached    从暂存区删除  
 ```
 
 ### 查看历史记录
 ```
-git log master  –pretty=oneline -10       单行查看master最近10次提交  
-git log masger –pretty = format: “%s” -10 > log.txt         最近10次提交格式显示后写入文件  
-git log –p – filepath/file              查看file在历史哪些提交有过更新 
-git reflog  查看引用分支，所有的git操作都将记录，可配合reset回退  
+git log master --oneline -10        单行查看master最近10次提交  
+git log master --pretty=oneline -10 单行查看master最近10次提交  
+git log master --pretty=oneline --graph -10         以图形方式单行查看master最近10次提交
+git log masger --pretty=format: “%s” -10 > log.txt  最近10次提交格式显示后写入文件  
+git log –p – filepath/file          查看file在历史哪些提交有过更新 
+git reflog                          查看引用分支，所有的git操作都将记录，可配合reset回退  
 ```
 
 ### 撤销与恢复
 ```
-git checkout -- file                       回退文件中工作区的修改  
-git reset HEAD file                      回到已修改未暂存的状态  
+git checkout -- file    回退文件中工作区的修改  
+git reset HEAD file     回到已修改未暂存的状态  
  
-git reset HEAD~1                       撤销最近一次提交  
-git reset HEAD^                          撤销最近一次提交  
-git reset SHA                               回到SHA的状态  
-git reset –soft                              回退commit->index  
-git reset –mixed                          回退index->working  
-git reset –hard                             回退commit、index、working->unchanged  
+git reset HEAD~1        撤销最近一次提交  
+git reset HEAD^         撤销最近一次提交  
+git reset SHA           回到SHA的状态  
+git reset –soft         回退commit->index  
+git reset –mixed        回退index->working  
+git reset –hard         回退commit、index、working->unchanged  
        
-git revert HEAD                         撤销上一次提交  
-git revert HEAD^                       撤销上上一次提交  
-git revert SHA                            撤销SHA的提交  
+git revert HEAD         撤销上一次提交  
+git revert HEAD^        撤销上上一次提交  
+git revert SHA          撤销SHA的提交  
 ```
 
 ### 分支
@@ -98,7 +106,7 @@ git cherry-pick --ours file       将本地分支文件检出
 git cherry-pick 提示 refusing to lose untracked file  engmode/..../TelephoyFragment.java，此工程把该文件过滤掉了
 git cherry-pick 提示is not possible because you have unmerged files  此工程把cherry-pick文件过滤掉了
 ```
- 
+
 ### 备份栈
 ```
 git stash       备份当前工作区内容  
