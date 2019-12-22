@@ -52,9 +52,35 @@ out/          out目录，非out文件
 git diff           工作区 – 暂存区  
 git diff HEAD      工作区 – 提交区
 git diff –cached   暂存区 – 提交区
+git diff master test --filename  master分支和test分支关于filename的差异
+```
+
+### 查看类型与内容
+
+```
+cat-file -t 325b5488e09c8d39c655f0d0abb497b307acf517
+commit
+git cat-file -p 325b5488e09c8d39c655f0d0abb497b307acf517
+tree 52299e7bc9aeae5aa3a7338615bb09a7e73d2773
+parent 3dc8cb1dc564d14b3525ae192d57411b90ac8168
+author sky <hsf1002@gmail.com> 1576928487 +0800
+committer sky <hsf1002@gmail.com> 1576928487 +0800
+
+26033
+
+
+git cat-file -t fdd196c2099dc5df5aa22d086b47693d4b7a14cd
+tree
+git cat-file -p fdd196c2099dc5df5aa22d086b47693d4b7a14cd
+100644 blob 21955369dca020b1c3f3ccf61484e2459a0eb4d1	README.md
+git cat-file -t 21955369dca020b1c3f3ccf61484e2459a0eb4d1
+blob
+git cat-file -p 21955369dca020b1c3f3ccf61484e2459a0eb4d1
+### 第26章 监控子进程
 ```
 
 ### 删除git多余
+
 ```
 git rm $(git ls-files –deleted)  删除多个已删除的文件  
 git rm  从工作目录（working tree） 删除  
@@ -62,7 +88,40 @@ git rm –f         从工作目录和暂存区删除
 git rm –cached    从暂存区删除  
 ```
 
+### HEAD指针
+
+```
+HEAD总是指向一个commit，如果是最近一个commit，则指向该分支
+否则是分离指针，表示不属于任何分支
+
+查看当前HEAD指针：cat .git/HEAD
+ref: refs/heads/master
+```
+
+### 修改提交信息
+
+```
+如果是本次提交：git commit --amend
+如果不是本地提交：git rebase -i SHA（要修改的提交的父亲）
+需要修改的提交pick改为r
+:wq!退出
+
+git会先分离HEAD指针，修改之后重新提交再进行rebase，所以SHA信息会改变
+```
+
+### 合并提交
+
+```
+git rebase -i SHA（最早要合并的提交的父亲）
+最早要合并的提交放在第一行
+其他要合并的提交修改pick为s
+:wq!退出
+
+git会先分离HEAD指针，修改之后重新提交再进行rebase，所以SHA信息会改变
+```
+
 ### 查看历史记录
+
 ```
 git log master --oneline -10        单行查看master最近10次提交  
 git log master --pretty=oneline -10 单行查看master最近10次提交  
@@ -91,28 +150,28 @@ git revert SHA          撤销SHA的提交
 
 ### 分支
 ```
-git branch  newbranch     新建分支  
-git checkout newbranch           切换分支（新建并切换分支：git checkout –b newbranch）  
-git branch –d newbranch       删除分支（D表示强制删除）  
-git branch –v                              查看各个分支的最近一次提交  
-git branch -r             查看远程分支
+git branch  newbranch    新建分支  
+git checkout newbranch   切换分支（新建并切换分支：git checkout –b newbranch）  
+git branch –d newbranch  删除分支（D表示强制删除）  
+git branch –v            查看各个分支的最近一次提交  
+git branch -r            查看远程分支
 ```
 
 ### 复制节点
 ```
-git cherry-pick SHA  -10          将另一个分支的SHA之前的10次提交复制到当前分支  
-git cherry-pick --theirs file     将对方分支文件检出
-git cherry-pick --ours file       将本地分支文件检出
-git cherry-pick 提示 refusing to lose untracked file  engmode/..../TelephoyFragment.java，此工程把该文件过滤掉了
-git cherry-pick 提示is not possible because you have unmerged files  此工程把cherry-pick文件过滤掉了
+git cherry-pick SHA  -10        将另一个分支的SHA之前的10次提交复制到当前分支  
+git cherry-pick --theirs file   将对方分支文件检出
+git cherry-pick --ours file     将本地分支文件检出
+提示 refusing to lose untracked file  engmode/..../TelephoyFragment.java：此工程把该文件过滤掉了
+提示 is not possible because you have unmerged files：此工程把cherry-pick文件过滤掉了
 ```
 
 ### 备份栈
 ```
-git stash       备份当前工作区内容  
-git stash pop 读取当前工作区内容，并清空栈  
+git stash        备份当前工作区内容  
+git stash pop    读取当前工作区内容，并清空栈  
 git stash list   查看当前栈内备份列表  
-git stash apply stash@{2}         读取第二次保存内容  
+git stash apply stash@{2}    读取第二次保存内容  
 ```
 
 ### 生成PATCH
@@ -152,3 +211,14 @@ rebase会在两分支的结合节点依次合入分支的节点，然后依次�
 ```
 reest是把HEAD向后移动了一下，而revert则是HEAD继续向前
 ```
+
+### gitk
+
+```
+Author: sky <hsf1002@gmail.com>  2019-12-21 10:09:14     // 表示原作者
+Committer: sky <hsf1002@gmail.com>  2019-12-21 10:09:14  // 表示本地提交者
+Parent: 6bc33ad9439b6e2b48d619734f3fe8236b8fed9b (fork-stdio-buf) // 上一个提交
+Child:  aec53cd44f0882879d84ee2d03e41a97241d3f25 (multi-wait)     // 下一个提交
+Branches: master, remotes/origin/master  // 哪些分支包含该commit
+```
+
