@@ -133,15 +133,18 @@ git reflog                          查看引用分支，所有的git操作都�
 
 ### 撤销与恢复
 ```
-git checkout -- file    回退文件中工作区的修改  
+checkout：针对工作区
+reset：针对暂存区或提交区
+
+git checkout -- file    丢弃工作区的修改  
 git reset HEAD file     回到已修改未暂存的状态  
  
 git reset HEAD~1        撤销最近一次提交  
 git reset HEAD^         撤销最近一次提交  
 git reset SHA           回到SHA的状态  
-git reset –soft         回退commit->index  
-git reset –mixed        回退index->working  
-git reset –hard         回退commit、index、working->unchanged  
+git reset --soft        回退提交区到暂存区
+git reset --mixed       回退暂存区到工作区
+git reset --hard        回退整个提交
        
 git revert HEAD         撤销上一次提交  
 git revert HEAD^        撤销上上一次提交  
@@ -171,36 +174,51 @@ git cherry-pick --ours file     将本地分支文件检出
 git stash        备份当前工作区内容  
 git stash pop    读取当前工作区内容，并清空栈  
 git stash list   查看当前栈内备份列表  
-git stash apply stash@{2}    读取第二次保存内容  
+git stash apply stash@{2}    读取第二次保存内容，但不会清空栈 
 ```
 
 ### 生成PATCH
 ```
-git format-patch  -1 当前提交生成的patch  
+git format-patch  -1     当前提交生成的patch  
 git format-patch SHA1    从SHA1到当前提交生成的patch  
-git format-patch SHA1..SHA2           SHA1到SHA2之间的patch （SHA2比SHA1新）  
+git format-patch SHA1..SHA2    SHA1到SHA2之间的patch（SHA2比SHA1新）  
 git am patch    打patch  
  
-git diff SHA1   SHA1基于上次提交生成的patch  
-git diff SHA1 SHA2 SHA2基于SHA1生成的patch  
+git diff SHA1        SHA1基于上次提交生成的patch  
+git diff SHA1 SHA2   SHA2基于SHA1生成的patch  
 git apply –check patch  打patch前判断能否顺利执行  
-git apply patch    打patch  
-git patch –p1 < patch     先进入patch指示的目录，将patch拷贝到该目录，执行此命令(不支持二进制和so等文件)
+git apply patch         打patch  
+git patch –p1 < patch   先进入patch指示的目录，将patch拷贝到该目录，执行此命令(不支持二进制和so等文件)
 ```
 
 ### 远程分支
 ```
-git remote –v            查看远程git库的路径  
-git remote add        git-base-cmcc  git@192.168.0.68:sprd9830_3.2.0_cmcc  localpath
+git remote –v        查看远程git库的路径  
+git remote add git-base-cmcc  git@192.168.0.68:sprd9830_3.2.0_cmcc  localpath
          本地localpath新建一个名字为git-base-cmcc的对应于远程的本地分支  
-git fetch           git-base-cmcc           将远程分支代码pull下来到git-base-cmcc  
-git push  base_cmcc       master:base_cmcc  将本地master分支push到远程base_cmcc分支  
-git push  base_cmcc       :base_cmcc      先删除远程base_cmcc的base_cmcc分支  
-git push -u origin master -f  	往github push时候出错，如果要直接覆盖github上代码
-git clone ssh://shiyang@192.168.0.25/home/29/shiyang/work/qiku            克隆某个工程到本地  
+git fetch git-base-cmcc    将远程分支代码同步下来到git-base-cmcc（git pull则是先同步再merge）
+git push base_cmcc master:base_cmcc  将本地master分支push到远程base_cmcc分支  
+git push base_cmcc :base_cmcc        先删除远程base_cmcc的base_cmcc分支  
+git push -u origin master -f         往github push时候出错，如果要直接覆盖github上代码
+git clone ssh://shiyang@192.168.0.25/home/29/shiyang/work/qiku    克隆某个工程到本地  
+```
+
+### 本地仓库与Github同步
+
+```
+1. 如果github是空，且本地也为空
+先在github创建仓库，在本地目录执行：git clone https://github.com/hsf1002/GitCmd.git
+
+2. 如果github是空，且本地不为空
+a: 先在github创建仓库（名称为https://github.com/hsf1002/GitCmd.git）
+b: 本地创建远程分支：git remote add github https://github.com/hsf1002/GitCmd.git
+c: 将远程github的master分支同步下来：git fetch github master
+d: 将两个不相干的分支（远端和本地）进行合并：git merge --allow-unrelated-histories github/master
+e: 将本地所有分支push到远端：git push github --all
 ```
 
 ### merge与rebase差别
+
 ```
 merge会将两个分支最近的节点合并生成一个新的节点，原先两个分支的节点都保留，非线性结构  
 rebase会在两分支的结合节点依次合入分支的节点，然后依次更新master上后面分支节点，保证线性  
