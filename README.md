@@ -25,7 +25,49 @@ find . -name .gitignore | xargs rm -rf
 find . -name .git | xargs rm -rf
 ```
 
+### 四种协议
+
+```
+1. 本地协议
+远程版本库就是硬盘内的另一个目录
+
+(1) 克隆一个远程版本库到本地
+<哑协议，不推荐>git clone /Users/sky/work/practice/git_test/remote
+<智能协议，推荐>git clone file:///Users/sky/work/practice/git_test/remote
+
+(2) 增加一个本地版本库到远程
+git remote add local_proj /Users/sky/work/practice/git_test/remote
+
+(3) 本地修改后同步到远程
+git push
+
+如果报错，需要在远程的.git/config中添加
+[receive]
+    denyCurrentBranch = ignore
+
+2. 智能 HTTP 协议
+最流行，既支持像 git:// 协议一样设置匿名服务，也可以像 SSH 协议一样提供传输时的授权和加密，相比 SSH 协议，可以使用用户名／密码授权，用户不必在使用 Git 之前先在本地生成 SSH 密钥对再把公钥上传到服务器
+
+克隆一个远程版本库到本地
+git clone https://github.com/hsf1002/GitCmd.git
+
+哑 HTTP 协议
+在 Git1.6.6 版本之前，十分简单且通常是只读模式
+
+3. SSH 协议
+所有传输数据都要经过授权和加密，与 HTTP/S 协议、Git协议及本地协议一样，很高效，在传输前也会尽量压缩数据
+
+克隆一个远程版本库到本地
+git clone ssh://user@server/project.git
+git clone user@server:project.git
+不指定用户，Git 会使用当前登录的用户名
+
+4. Git 协议
+监听在一个特定的端口（9418），类似 SSH 服务，但是访问无需任何授权，要么谁都可以克隆这个版本库，要么谁也不能
+```
+
 ### 五种状态
+
 ```
 untracked、unmodifed、modified、staged、committed
 ```
