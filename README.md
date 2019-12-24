@@ -29,17 +29,24 @@ find . -name .git | xargs rm -rf
 
 ```
 1. 本地协议
-远程版本库就是硬盘内的另一个目录
-
+第一种情况：remote--->local
 (1) 克隆一个远程版本库到本地
 <哑协议，不推荐>git clone /Users/sky/work/practice/git_test/remote
 <智能协议，推荐>git clone file:///Users/sky/work/practice/git_test/remote
-
 (2) 增加一个本地版本库到远程
 git remote add local_proj /Users/sky/work/practice/git_test/remote
-
 (3) 本地修改后同步到远程
-git push
+git push local_proj
+
+第二种情况：local--->remote
+(1) 远程新建一个git仓库
+git init
+(2) 增加一个本地版本库到远程
+git remote add local_proj /Users/sky/work/practice/git_test/remote
+(3) 本地修改后同步到远程
+git push local_proj
+
+为推送当前分支并建立与远程上游的跟踪，使用：    git push --set-upstream remote_file master
 
 如果报错，需要在远程的.git/config中添加
 [receive]
@@ -103,10 +110,10 @@ git diff master test --filename  master分支和test分支关于filename的差�
 cat-file -t 325b5488e09c8d39c655f0d0abb497b307acf517
 commit
 git cat-file -p 325b5488e09c8d39c655f0d0abb497b307acf517
-tree 52299e7bc9aeae5aa3a7338615bb09a7e73d2773
-parent 3dc8cb1dc564d14b3525ae192d57411b90ac8168
-author sky <hsf1002@gmail.com> 1576928487 +0800
-committer sky <hsf1002@gmail.com> 1576928487 +0800
+tree 52299e7bc9aeae5aa3a7338615bb09a7e73d2773      // 隶属那个tree
+parent 3dc8cb1dc564d14b3525ae192d57411b90ac8168    // 上一个提交
+author sky <hsf1002@gmail.com> 1576928487 +0800    // 原作者
+committer sky <hsf1002@gmail.com> 1576928487 +0800 // 提交者
 
 26033
 
@@ -271,14 +278,3 @@ rebase会在两分支的结合节点依次合入分支的节点，然后依次�
 ```
 reest是把HEAD向后移动了一下，而revert则是HEAD继续向前
 ```
-
-### gitk
-
-```
-Author: sky <hsf1002@gmail.com>  2019-12-21 10:09:14     // 表示原作者
-Committer: sky <hsf1002@gmail.com>  2019-12-21 10:09:14  // 表示本地提交者
-Parent: 6bc33ad9439b6e2b48d619734f3fe8236b8fed9b (fork-stdio-buf) // 上一个提交
-Child:  aec53cd44f0882879d84ee2d03e41a97241d3f25 (multi-wait)     // 下一个提交
-Branches: master, remotes/origin/master  // 哪些分支包含该commit
-```
-
