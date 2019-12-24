@@ -19,12 +19,6 @@ git config --system：对所有用户有效
 对于.git/config配置而言，git config --local优先级最高
 ```
 
-### 删除冗余
-```
-find . -name .gitignore | xargs rm -rf  
-find . -name .git | xargs rm -rf
-```
-
 ### 四种协议
 
 ```
@@ -83,11 +77,11 @@ untracked、unmodifed、modified、staged、committed
 ```
 git init  
 git add .             未跟踪->已跟踪为修改  
-git commit   -m:      提交更新 –a:  跳过暂存区  
-git commit –amend     重新提交  
+git commit -m         提交更新   
+git commit -am        跳过暂存区
 ```
 
-### 配置.gitignore  
+### .gitignore  
 ```
 *.[ao]        任何.a或者.o文件  
 !lib.a        除了lib.a之外  
@@ -128,13 +122,16 @@ git cat-file -p 21955369dca020b1c3f3ccf61484e2459a0eb4d1
 ### 第26章 监控子进程
 ```
 
-### 删除git多余
+### 删除多余
 
 ```
 git rm $(git ls-files –deleted)  删除多个已删除的文件  
 git rm  从工作目录（working tree） 删除  
 git rm –f         从工作目录和暂存区删除  
 git rm –cached    从暂存区删除  
+
+find . -name .gitignore | xargs rm -rf  
+find . -name .git | xargs rm -rf
 ```
 
 ### HEAD指针
@@ -205,11 +202,24 @@ git revert SHA          撤销SHA的提交
 git branch  newbranch    新建分支  
 git checkout newbranch   切换分支（新建并切换分支：git checkout –b newbranch）  
 git branch –d newbranch  删除分支（D表示强制删除）  
-git branch –v            查看各个分支的最近一次提交  
+git branch –v            查看远程git库的路径
 git branch -r            查看远程分支
 ```
 
+### 远程分支
+
+```
+git remote add git-base-cmcc  git@192.168.0.68:sprd9830_3.2.0_cmcc  localpath
+         本地localpath新建一个名字为git-base-cmcc的对应于远程的本地分支  
+git fetch git-base-cmcc    将远程分支代码同步下来到git-base-cmcc（git pull则是先同步再merge）
+git push base_cmcc master:base_cmcc  将本地master分支push到远程base_cmcc分支  
+git push base_cmcc :base_cmcc        先删除远程base_cmcc的base_cmcc分支  
+git push -u origin master -f         往github push时候出错，如果要直接覆盖github上代码
+git clone ssh://shiyang@192.168.0.25/home/29/shiyang/work/qiku    克隆某个工程到本地  
+```
+
 ### 复制节点
+
 ```
 git cherry-pick SHA  -10        将另一个分支的SHA之前的10次提交复制到当前分支  
 git cherry-pick --theirs file   将对方分支文件检出
@@ -226,30 +236,18 @@ git stash list   查看当前栈内备份列表
 git stash apply stash@{2}    读取第二次保存内容，但不会清空栈 
 ```
 
-### 生成PATCH
+### PATCH
 ```
-git format-patch  -1     当前提交生成的patch  
-git format-patch SHA1    从SHA1到当前提交生成的patch  
+git format-patch  -1           当前提交生成的patch  
+git format-patch SHA1          从SHA1到当前提交生成的patch  
 git format-patch SHA1..SHA2    SHA1到SHA2之间的patch（SHA2比SHA1新）  
 git am patch    打patch  
  
-git diff SHA1        SHA1基于上次提交生成的patch  
-git diff SHA1 SHA2   SHA2基于SHA1生成的patch  
+git diff SHA1           SHA1基于上次提交生成的patch  
+git diff SHA1 SHA2      SHA2基于SHA1生成的patch  
 git apply –check patch  打patch前判断能否顺利执行  
 git apply patch         打patch  
 git patch –p1 < patch   先进入patch指示的目录，将patch拷贝到该目录，执行此命令(不支持二进制和so等文件)
-```
-
-### 远程分支
-```
-git remote –v        查看远程git库的路径  
-git remote add git-base-cmcc  git@192.168.0.68:sprd9830_3.2.0_cmcc  localpath
-         本地localpath新建一个名字为git-base-cmcc的对应于远程的本地分支  
-git fetch git-base-cmcc    将远程分支代码同步下来到git-base-cmcc（git pull则是先同步再merge）
-git push base_cmcc master:base_cmcc  将本地master分支push到远程base_cmcc分支  
-git push base_cmcc :base_cmcc        先删除远程base_cmcc的base_cmcc分支  
-git push -u origin master -f         往github push时候出错，如果要直接覆盖github上代码
-git clone ssh://shiyang@192.168.0.25/home/29/shiyang/work/qiku    克隆某个工程到本地  
 ```
 
 ### 本地仓库与Github同步
@@ -266,15 +264,17 @@ d: 将两个不相干的分支（远端和本地）进行合并：git merge --al
 e: 将本地所有分支push到远端：git push github --all
 ```
 
-### merge与rebase差别
+### merge与rebase
 
 ```
-merge会将两个分支最近的节点合并生成一个新的节点，原先两个分支的节点都保留，非线性结构  
-rebase会在两分支的结合节点依次合入分支的节点，然后依次更新master上后面分支节点，保证线性  
-如果想要一个干净的没有merge节点的线性历史树，应该rebase，如果想保存两个分支完整的历史记录，避免重写commit history的风险，则merge
+merge: 会将两个分支最近的节点合并生成一个新的节点，原先两个分支的节点都保留，非线性结构，如果想保存两个分支完整的历史记录，避免重写commit history的风险，应该merge  
+
+rebase: 会在两分支的结合节点依次cherry-pick分支的节点，然后依次更新master上后面分支节点，保证线性，如果想要一个干净的没有merge节点的线性历史树，应该rebase 
 ```
 
-### revert与reset差别
+### revert与reset
 ```
-reest是把HEAD向后移动了一下，而revert则是HEAD继续向前
+reest:  HEAD向后移动
+revert: HEAD继续向前
 ```
+
