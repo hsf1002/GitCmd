@@ -166,7 +166,27 @@ git rebase -i SHA（最早要合并的提交的父亲）
 git会先分离HEAD指针，修改之后重新提交再进行rebase，所以SHA信息会改变
 ```
 
-### 查看历史记录
+### 标签
+
+```
+git tag           查看标签
+git tag V1.0      创建轻量标签
+git tag V1.0 SHA  给SHA创建轻量标签
+git tag -a V1.0 -m "the first tag" SHA  给SHA创建附加标签
+git tag -d V1.0   删除标签
+```
+
+### 移动文件
+
+```
+git mv README.md README
+相当于
+mv README.md README 
+git rm README.md 
+git add README
+```
+
+### 查看日志
 
 ```
 git log master --oneline -10        单行查看master最近10次提交  
@@ -197,7 +217,14 @@ git revert HEAD^        撤销上上一次提交
 git revert SHA          撤销SHA的提交  
 ```
 
+### 调试
+
+```
+git blame -C -L 38,42 RkLunch.sh   查看文件第38-42行的所有提交记录，-C表示即使文件重命名也可以查看
+```
+
 ### 分支
+
 ```
 git branch  newbranch    新建分支  
 git checkout newbranch   切换分支（新建并切换分支：git checkout –b newbranch）  
@@ -209,12 +236,16 @@ git branch -r            查看远程分支
 ### 远程分支
 
 ```
-git remote add git-base-cmcc  git@192.168.0.68:sprd9830_3.2.0_cmcc  localpath
-         本地localpath新建一个名字为git-base-cmcc的对应于远程的本地分支  
-git fetch git-base-cmcc    将远程分支代码同步下来到git-base-cmcc（git pull则是先同步再merge）
-git push base_cmcc master:base_cmcc  将本地master分支push到远程base_cmcc分支  
-git push base_cmcc :base_cmcc        先删除远程base_cmcc的base_cmcc分支  
-git push -u origin master -f         往github push时候出错，如果要直接覆盖github上代码
+git remote show cmcc      查看信息
+git remote rename cmcc mp 重命名
+git remote rm cmcc        删除
+
+git remote add cmcc  git@192.168.0.68:sprd9830_3.2.0_cmcc  localpath
+         本地localpath新建一个名字为cmcc的对应于远程的本地分支  
+git fetch cmcc    将远程分支代码同步下来到cmcc（git pull则是先同步再merge）
+git push cmcc master:base_cmcc  将本地master分支push到远程base_cmcc分支  
+git push cmcc :base_cmcc        先删除远程cmcc的base_cmcc分支  
+git push -u origin master -f    往github push时候出错，如果要直接覆盖github上代码
 git clone ssh://shiyang@192.168.0.25/home/29/shiyang/work/qiku    克隆某个工程到本地  
 ```
 
@@ -276,5 +307,25 @@ rebase: 会在两分支的结合节点依次cherry-pick分支的节点，然后�
 ```
 reest:  HEAD向后移动
 revert: HEAD继续向前
+```
+
+### github搜索
+
+```
+搜索仓库
+jquery in:name             匹配其名称中含有 jquery 的仓库
+jquery in:name,description 匹配其名称或说明中含有 jquery 的仓库
+jquery in:readme           匹配其自述文件中提及 jquery 的仓库
+repo:hsf1002/hello-world   匹配用户hsf1002下的特定仓库名称
+
+user:hsf1002 forks:>1000 followers:>100  匹配fork超过1000，跟随者超过100个，来自hsf1002的仓库
+jquery in:name stars:>1000 size:>100     匹配星星超过1000，大小超过100K，名称包含jquery的仓库
+jquery created:>2019-11-11               匹配具有jquery字样、日期在 2019-11-11之后创建的仓库
+jquery pushed:>2019-11-11 fork:only      匹配具有jquery字样，日期在 2019-11-11之后收到推送并且作为复刻的仓库
+serialport language:C++ topics:>1 topic:QT5  匹配具有serialport字样，开发语言是C++，主题超过1个并且主题包含QT5的仓库
+
+搜索代码：
+user:hsf1002 extension:cpp availablePorts in:file              在用户hsf1002的cpp文件中搜索包含availablePorts的代码片段
+repo:hsf1002/qt-serial-port extension:cpp QSerialPort in:file  在用户hsf1002的仓库qt-serial-port的cpp文件中搜索包含QSerialPort的代码片段
 ```
 
