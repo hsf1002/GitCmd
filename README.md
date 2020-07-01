@@ -240,8 +240,7 @@ git remote show cmcc      查看信息
 git remote rename cmcc mp 重命名
 git remote rm cmcc        删除
 
-git remote add cmcc  git@192.168.0.68:sprd9830_3.2.0_cmcc  localpath
-         本地localpath新建一个名字为cmcc的对应于远程的本地分支  
+git remote add shiyang_L713 ssh://user@192.168.30.160/home/workspace/Work/Mehfil_GIT/idh.code/.git  localpath(localpath可选，为shiyang_L713的对应的远程的本地分支)
 git fetch cmcc    将远程分支代码同步下来到cmcc（git pull则是先同步再merge）
 git push cmcc master:base_cmcc  将本地master分支push到远程base_cmcc分支  
 git push cmcc :base_cmcc        先删除远程cmcc的base_cmcc分支  
