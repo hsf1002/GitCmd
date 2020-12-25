@@ -144,7 +144,7 @@ HEAD总是指向一个commit，如果是最近一个commit，则指向该分支
 ref: refs/heads/master
 ```
 
-### 修改提交信息
+### 修改提交
 
 ```
 如果是本次提交：git commit --amend
@@ -164,6 +164,40 @@ git rebase -i SHA（最早要合并的提交的父亲）
 :wq!退出
 
 git会先分离HEAD指针，修改之后重新提交再进行rebase，所以SHA信息会改变
+```
+
+### 复制节点
+
+```
+git cherry-pick SHA  -10        将另一个分支的SHA之前的10次提交复制到当前分支  
+git cherry-pick --theirs file   将对方分支文件检出
+git cherry-pick --ours file     将本地分支文件检出
+提示 refusing to lose untracked file  engmode/..../TelephoyFragment.java：此工程把该文件过滤掉了
+提示 is not possible because you have unmerged files：此工程把cherry-pick文件过滤掉了
+```
+
+### 备份栈
+
+```
+git stash        备份当前工作区内容  
+git stash pop    读取当前工作区内容，并清空栈  
+git stash list   查看当前栈内备份列表  
+git stash apply stash@{2}    读取第二次保存内容，但不会清空栈 
+```
+
+### PATCH
+
+```
+git format-patch  -1           当前提交生成的patch  
+git format-patch SHA1          从SHA1到当前提交生成的patch  
+git format-patch SHA1..SHA2    SHA1到SHA2之间的patch（SHA2比SHA1新）  
+git am patch    打patch  
+ 
+git diff SHA1           SHA1基于上次提交生成的patch  
+git diff SHA1 SHA2      SHA2基于SHA1生成的patch  
+git apply –check patch  打patch前判断能否顺利执行  
+git apply patch         打patch  
+git patch –p1 < patch   先进入patch指示的目录，将patch拷贝到该目录，执行此命令(不支持二进制和so等文件)
 ```
 
 ### 标签
@@ -217,6 +251,21 @@ git revert HEAD^        撤销上上一次提交
 git revert SHA          撤销SHA的提交  
 ```
 
+### revert与reset
+
+```
+reest:  HEAD向后移动
+revert: HEAD继续向前
+```
+
+### merge与rebase
+
+```
+merge: 会将两个分支最近的节点合并生成一个新的节点，原先两个分支的节点都保留，非线性结构，如果想保存两个分支完整的历史记录，避免重写commit history的风险，应该merge  
+
+rebase: 会在两分支的结合节点依次cherry-pick分支的节点，然后依次更新master上后面分支节点，保证线性，如果想要一个干净的没有merge节点的线性历史树，应该rebase 
+```
+
 ### 调试
 
 ```
@@ -248,39 +297,27 @@ git push -u origin master -f    往github push时候出错，如果要直接覆�
 git clone ssh://shiyang@192.168.0.25/home/29/shiyang/work/qiku    克隆某个工程到本地  
 ```
 
-### 复制节点
+### 与远程分支同步
 
 ```
-git cherry-pick SHA  -10        将另一个分支的SHA之前的10次提交复制到当前分支  
-git cherry-pick --theirs file   将对方分支文件检出
-git cherry-pick --ours file     将本地分支文件检出
-提示 refusing to lose untracked file  engmode/..../TelephoyFragment.java：此工程把该文件过滤掉了
-提示 is not possible because you have unmerged files：此工程把cherry-pick文件过滤掉了
+同步远程S809_Aurora分支到本地
+git rebase origin/S809_Aurora  // 可能要处理冲突，分支保持线性
+git pull origin/S809_Aurora    // 相对容易，但是分支看起来会乱
+
+1. 本地push到远程S809_Aurora_ctcc分支
+git pull --rebase origin S809_Aurora_ctcc
+git rebase --skip
+git push origin S809_Aurora_ctcc
+
+2. 强制push到服务器
+git push origin S809_Aurora_ctcc -f
+
+3. 强制更新到本地
+git fetch origin
+git reset --hard origin/S809_Aurora_ctcc
 ```
 
-### 备份栈
-```
-git stash        备份当前工作区内容  
-git stash pop    读取当前工作区内容，并清空栈  
-git stash list   查看当前栈内备份列表  
-git stash apply stash@{2}    读取第二次保存内容，但不会清空栈 
-```
-
-### PATCH
-```
-git format-patch  -1           当前提交生成的patch  
-git format-patch SHA1          从SHA1到当前提交生成的patch  
-git format-patch SHA1..SHA2    SHA1到SHA2之间的patch（SHA2比SHA1新）  
-git am patch    打patch  
- 
-git diff SHA1           SHA1基于上次提交生成的patch  
-git diff SHA1 SHA2      SHA2基于SHA1生成的patch  
-git apply –check patch  打patch前判断能否顺利执行  
-git apply patch         打patch  
-git patch –p1 < patch   先进入patch指示的目录，将patch拷贝到该目录，执行此命令(不支持二进制和so等文件)
-```
-
-### 本地仓库与Github同步
+### 与Github同步
 
 ```
 1. 如果github是空，且本地也为空
@@ -294,21 +331,7 @@ d: 将两个不相干的分支（远端和本地）进行合并：git merge --al
 e: 将本地所有分支push到远端：git push github --all
 ```
 
-### merge与rebase
-
-```
-merge: 会将两个分支最近的节点合并生成一个新的节点，原先两个分支的节点都保留，非线性结构，如果想保存两个分支完整的历史记录，避免重写commit history的风险，应该merge  
-
-rebase: 会在两分支的结合节点依次cherry-pick分支的节点，然后依次更新master上后面分支节点，保证线性，如果想要一个干净的没有merge节点的线性历史树，应该rebase 
-```
-
-### revert与reset
-```
-reest:  HEAD向后移动
-revert: HEAD继续向前
-```
-
-### github搜索
+### 在github搜索
 
 ```
 搜索仓库
