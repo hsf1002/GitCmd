@@ -231,7 +231,24 @@ git log –p – filepath/file          查看file在历史哪些提交有过更
 git reflog                          查看引用分支，所有的git操作都将记录，可配合reset回退  
 ```
 
+### 查看提交文件列表
+
+```
+git show --stat --oneline HEAD  最近一次
+git show --stat --oneline SHA   某一次
+
+git show --name-only --oneline HEAD  不显示添加/删除统计信息
+```
+
+### 回退文件到某次提交
+
+```
+git log filepath        列出文件所有提交
+git reset SHA filepath  讲文件回退到SHA
+```
+
 ### 撤销与恢复
+
 ```
 checkout：针对工作区
 reset：针对暂存区或提交区
