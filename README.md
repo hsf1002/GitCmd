@@ -84,10 +84,18 @@ git commit -am        跳过暂存区
 ### .gitignore  
 ```
 *.[ao]        任何.a或者.o文件  
-!lib.a        除了lib.a之外  
-out           out目录和out文件  
-out/          out目录，非out文件  
-/out          out目录和out文件，子目录下的out不包括                       
+out           当前目录下以及所有子目录下的out目录和out文件  
+out/          out目录下所有文件  
+/out          out目录和out文件，子目录下的out不包括  
+
+/tmp/models/*
+!/tmp/models/empty   忽略 /tmp/models 文件夹下的所有文件，但不忽略 /tmp/models/empty 文件
+
+
+git工程配置以后，再添加.gitignore将无法生效，需要
+git rm -r --cached .
+git add .
+git commit -m 'update .gitignore'
 ```
 
 ### 查看差分
@@ -368,3 +376,16 @@ user:hsf1002 extension:cpp availablePorts in:file              在用户hsf1002�
 repo:hsf1002/qt-serial-port extension:cpp QSerialPort in:file  在用户hsf1002的仓库qt-serial-port的cpp文件中搜索包含QSerialPort的代码片段
 ```
 
+### 从repo远程下载
+```
+mkdir -p ~/.bin
+PATH="${HOME}/.bin:${PATH}"
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
+chmod a+rx ~/.bin/repo
+
+export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo'
+cat ~/.ssh/id_rsa.pub 
+repo init -u ssh://Zhangming@192.168.0.74:29418/manifests.git -b CNCE/chiron/master -m cnce_yandex_default.xml
+repo sync
+repo start master --all
+```
